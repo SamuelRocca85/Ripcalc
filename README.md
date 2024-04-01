@@ -17,7 +17,7 @@ You will find the executable on the **target/release** folder
 You can see information of an IP Address by providing the IP with it's prefix
 
 ```bash
-ripcalc 192.160.1.10/24 
+ripcalc 192.168.1.10/24 
 ```
 
 The expected output will show details such as network address and subnet mask.
