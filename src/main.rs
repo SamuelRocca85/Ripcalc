@@ -1,7 +1,9 @@
 use clap::Parser;
-use core::panic;
 use net::IP;
-use std::env;
+use std::{
+    env,
+    process::{self, ExitCode},
+};
 
 mod net;
 
@@ -17,7 +19,7 @@ struct Args {
     limit: Option<usize>,
 }
 
-fn main() {
+fn main() -> ExitCode {
     let args = Args::parse();
     let argc = env::args().count();
 
@@ -28,7 +30,8 @@ fn main() {
             ip = ip_result;
         }
         Err(e) => {
-            panic!("Error: {}", e);
+            println!("Error: {}", e);
+            process::exit(1);
         }
     }
 
@@ -44,12 +47,16 @@ fn main() {
 
     if let Some(prefix) = &args.prefix {
         if prefix <= ip.prefix() {
-            panic!("Valor de subneteo incorrecto");
+            println!("Valor de subneteo incorrecto");
+            return process::ExitCode::FAILURE;
         }
         let subnets: Vec<IP>;
         match ip.subnet(*prefix) {
             Ok(result) => subnets = result,
-            Err(e) => panic!("Error: {}", e),
+            Err(e) => {
+                println!("Error: {}", e);
+                return process::ExitCode::FAILURE;
+            }
         }
 
         let mut max_subnets_show = subnets.len();
@@ -63,4 +70,5 @@ fn main() {
         }
         println!("--- {} ---", ip);
     }
+    process::ExitCode::SUCCESS
 }
