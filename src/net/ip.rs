@@ -112,8 +112,11 @@ impl TryFrom<&str> for IP {
         }
 
         let address: Address = Address::new(&value[..i])?;
-
-        let prefix: Prefix = value[i + 1..].parse::<Prefix>().unwrap();
+        let prefix: Prefix;
+        match value[i + 1..].parse::<Prefix>() {
+            Ok(pref) => prefix = pref,
+            Err(_) => return Err(IPError::InvalidAddress),
+        }
 
         if prefix > 32 {
             return Err(IPError::InvalidPrefix);
@@ -149,7 +152,10 @@ impl Display for IPError {
         match self {
             IPError::InvalidPrefix => write!(f, "Se esperaba un prefijo entre 0 y 32"),
             IPError::InvalidAddress => {
-                write!(f, "Formato de direccion incorrecto, se esperaba x.x.x.x/x")
+                write!(
+                    f,
+                    "Formato de direccion incorrecto, se esperaba x.x.x.x/x para 0 >= x <= 255"
+                )
             }
             IPError::InvalidSubnetPrefix => write!(f, "El prefijo de subneteo es incorrecto"),
             IPError::InvalidNetworkAddress => {

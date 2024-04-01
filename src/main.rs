@@ -1,9 +1,7 @@
 use clap::Parser;
 use net::IP;
-use std::{
-    env,
-    process::{self, ExitCode},
-};
+use std::env;
+use std::process::ExitCode;
 
 mod net;
 
@@ -31,7 +29,7 @@ fn main() -> ExitCode {
         }
         Err(e) => {
             println!("Error: {}", e);
-            process::exit(1);
+            return ExitCode::FAILURE;
         }
     }
 
@@ -48,14 +46,14 @@ fn main() -> ExitCode {
     if let Some(prefix) = &args.prefix {
         if prefix <= ip.prefix() {
             println!("Valor de subneteo incorrecto");
-            return process::ExitCode::FAILURE;
+            return ExitCode::FAILURE;
         }
         let subnets: Vec<IP>;
         match ip.subnet(*prefix) {
             Ok(result) => subnets = result,
             Err(e) => {
                 println!("Error: {}", e);
-                return process::ExitCode::FAILURE;
+                return ExitCode::FAILURE;
             }
         }
 
@@ -70,5 +68,5 @@ fn main() -> ExitCode {
         }
         println!("--- {} ---", ip);
     }
-    process::ExitCode::SUCCESS
+    ExitCode::SUCCESS
 }

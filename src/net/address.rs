@@ -37,8 +37,15 @@ impl Address {
             if octect.is_empty() {
                 return Err(IPError::InvalidAddress);
             }
-            let o: u8 = octect.parse::<u8>().unwrap();
-            let octect_bits = format!("{:0>8b}", o);
+
+            let octect_as_int: u8;
+
+            match octect.parse::<u8>() {
+                Ok(o) => octect_as_int = o,
+                Err(_) => return Err(IPError::InvalidAddress),
+            }
+
+            let octect_bits = format!("{:0>8b}", octect_as_int);
             address_bits.push_str(&octect_bits);
         }
 
