@@ -154,7 +154,7 @@ impl Display for IPError {
             IPError::InvalidAddress => {
                 write!(
                     f,
-                    "Formato de direccion incorrecto, se esperaba x.x.x.x/x para 0 >= x <= 255"
+                    "Formato de direccion incorrecto, se esperaba x.x.x.x/x para 0 <= x <= 255"
                 )
             }
             IPError::InvalidSubnetPrefix => write!(f, "El prefijo de subneteo es incorrecto"),
